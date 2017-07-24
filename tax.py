@@ -28,7 +28,16 @@ def web_parse():
 
 #Organizes the data into list for tax bracket
 def tax_bracket():
-    return False
+    for row in table.findAll("tr")
+    cells = row.findAll("td")
+    if len(cells) == 7:
+        10% = cells[1].find(text=True)
+        15% = cells[2].find(text=True)
+        25% = cells[3].find(text=True)
+        28% = cells[4].find(text=True)
+        33% = cells[5].find(text=True)
+        35% = cells[6].find(text=True)
+        39.6% = cells[7].find(text=True)
 
 if __name__ == '__main__':
     #Prints the last element of the list
