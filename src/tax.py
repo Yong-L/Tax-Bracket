@@ -1,6 +1,7 @@
 #Tax Bracket of People with Income
 from bs4 import BeautifulSoup as soup
 from urllib.request import urlopen as uOpen
+from math import inf
 import datetime
 import locale
 
@@ -13,6 +14,7 @@ row = 8
 #Dictionary to parse through 
 tax_bracket = {}
 
+#Reads the URL page
 def read_page(page_url):
     #Request from Wiki
     client = uOpen(page_url)
@@ -52,7 +54,7 @@ def web_parse():
         tax_bracket[category] = {} 
 
     #Parse through each percentage
-    for i in range(1, row - 1):
+    for i in range(1, row):
         
         percentage = table[i].find('th').next
         taxable = table[i].find_all('td')
@@ -60,12 +62,13 @@ def web_parse():
         counter = 0 
         for k in tax_bracket:
             t = taxable[counter].next
-            print(t)
-            if t.index != -1:
+            
+            if i < row - 1:
                 tax_bracket[k][locale.atoi(t[t.index('–') + 3:])] =  percentage
             else:
-                tax_bracket[k][locale.atoi(t[1 : len(t) - 1])] =  percentage
+                tax_bracket[k][inf] =  percentage
             counter += 1
+
 
     print(tax_bracket)
 
