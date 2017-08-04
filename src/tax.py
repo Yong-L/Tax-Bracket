@@ -1,13 +1,16 @@
 #Tax Bracket of People with Income
-
 from bs4 import BeautifulSoup as soup
 from urllib.request import urlopen as uOpen
 import datetime
+import locale
 
-#Size of table from wiki
-row = 8
-col = 5
+locale.setlocale(locale.LC_ALL, 'en_US.UTF8')
 
+#Number of rows and column from wiki table
+col = 5 
+row = 8 
+
+#Dictionary to parse through 
 tax_bracket = {}
 
 def read_page(page_url):
@@ -43,12 +46,28 @@ def web_parse():
 
     table = table.find_all('tr')
 
+    #Sort first by category 
     for i in range(1, col):
-        k_name = table[0].find_all('th')[i].next
-        tax_bracket[k_name] = {}
+        category = table[0].find_all('th')[i].next
+        tax_bracket[category] = {} 
 
-    for key in tax_bracket:
-        print(key)
+    #Parse through each percentage
+    for i in range(1, row - 1):
+        
+        percentage = table[i].find('th').next
+        taxable = table[i].find_all('td')
+
+        counter = 0 
+        for k in tax_bracket:
+            t = taxable[counter].next
+            print(t)
+            if t.index != -1:
+                tax_bracket[k][locale.atoi(t[t.index('–') + 3:])] =  percentage
+            else:
+                tax_bracket[k][locale.atoi(t[1 : len(t) - 1])] =  percentage
+            counter += 1
+
+    print(tax_bracket)
 
 if __name__ == '__main__':
     #Prints the last element of the list
