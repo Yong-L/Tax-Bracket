@@ -5,14 +5,41 @@ from math import inf
 import datetime
 import locale
 
+#For USD conversion to float value
 locale.setlocale(locale.LC_ALL, 'en_US.UTF8')
 
 #Number of rows and column from wiki table
 col = 5 
 row = 8 
 
-#Dictionary to parse through 
-tax_bracket = {}
+#Print the selection menu
+def print_menu(tax_dict):
+
+    selection = {}
+
+    for i, k in enumerate(tax_dict):
+        selection[i+1] = k
+
+    counter = 1
+    for k,v in selection.items():
+        print('{} : {}'.format(k, v))
+        counter +=1
+
+    user_input = int(input('Choose one that falls in the criteria by number: '))
+
+    while user_input not in selection:
+        user_input = int(input('Error in input please choose again: '))
+
+    return selection[user_input]
+
+def print_wage(tax_dict):
+
+    wage = int(input('Input your taxable income: '))
+
+    #Go through tax dictionary and compare which one it falls under
+    for k in tax_dict:
+        if wage < k:
+            return wage * tax_dict[k]
 
 #Reads the URL page
 def read_page(page_url):
@@ -32,6 +59,8 @@ def deduction():
 
 #Parses as HTML
 def web_parse():
+    #Tax dictionary to parse through
+    tax_bracket = {}
     #Wikipedia Tax Page
     page_url = 'https://en.wikipedia.org/wiki/Income_tax_in_the_United_States'
 
@@ -64,14 +93,17 @@ def web_parse():
             t = taxable[counter].next
             
             if i < row - 1:
-                tax_bracket[k][locale.atoi(t[t.index('–') + 3:])] =  percentage
+                #Rows have ranges instead of numbers
+                tax_bracket[k][locale.atoi(t[t.index('–') + 3:])] = float(percentage[:len(percentage)-1])/100
             else:
-                tax_bracket[k][inf] =  percentage
+                #Last row doesn't just has one number 
+                tax_bracket[k][inf] = float(percentage[:len(percentage)-1])/100
             counter += 1
 
-
-    print(tax_bracket)
+    return(tax_bracket)
 
 if __name__ == '__main__':
     #Prints the last element of the list
-    web_parse()
+    tax_dict = web_parse() 
+    sub_tax = tax_dict[print_menu(tax_dict)]
+    print(print_wage(sub_tax))
