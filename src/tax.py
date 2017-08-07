@@ -1,6 +1,7 @@
 #Tax Bracket of People with Income
 from bs4 import BeautifulSoup as soup
 from urllib.request import urlopen as uOpen
+from page import read_page
 from math import inf
 import datetime
 import locale
@@ -41,26 +42,20 @@ def print_wage(tax_dict):
         if wage < k:
             return wage * tax_dict[k]
 
-#Reads the URL page
-def read_page(page_url):
-    #Request from Wiki
-    client = uOpen(page_url)
-    page_html = client.read()
-    client.close()
-
-    return page_html
-
 #Parse as HTML
 def deduction():
     #Wikipedia about Standard Deduction Page
     page_url = 'https://en.wikipedia.org/wiki/Standard_deduction'
 
     page_html = read_page(page_url)
+    page_soup = soup(page_html, "html.parser")
+
+    
 
 #Parses as HTML
-def web_parse():
+def tax_bracket():
     #Tax dictionary to parse through
-    tax_bracket = {}
+    tax = {}
     #Wikipedia Tax Page
     page_url = 'https://en.wikipedia.org/wiki/Income_tax_in_the_United_States'
 
@@ -80,7 +75,7 @@ def web_parse():
     #Sort first by category 
     for i in range(1, col):
         category = table[0].find_all('th')[i].next
-        tax_bracket[category] = {} 
+        tax[category] = {} 
 
     #Parse through each percentage
     for i in range(1, row):
@@ -89,21 +84,21 @@ def web_parse():
         taxable = table[i].find_all('td')
 
         counter = 0 
-        for k in tax_bracket:
+        for k in tax:
             t = taxable[counter].next
             
             if i < row - 1:
                 #Rows have ranges instead of numbers
-                tax_bracket[k][locale.atoi(t[t.index('–') + 3:])] = float(percentage[:len(percentage)-1])/100
+                tax[k][locale.atoi(t[t.index('–') + 3:])] = float(percentage[:len(percentage)-1])/100
             else:
                 #Last row doesn't just has one number 
-                tax_bracket[k][inf] = float(percentage[:len(percentage)-1])/100
+                tax[k][inf] = float(percentage[:len(percentage)-1])/100
             counter += 1
 
-    return(tax_bracket)
+    return(tax)
 
 if __name__ == '__main__':
     #Prints the last element of the list
-    tax_dict = web_parse() 
-    sub_tax = tax_dict[print_menu(tax_dict)]
+    tax = tax_bracket() 
+    sub_tax = tax[print_menu(tax)]
     print(print_wage(sub_tax))
