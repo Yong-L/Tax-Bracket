@@ -42,16 +42,6 @@ def print_wage(tax_dict):
         if wage < k:
             return wage * tax_dict[k]
 
-#Parse as HTML
-def deduction():
-    #Wikipedia about Standard Deduction Page
-    page_url = 'https://en.wikipedia.org/wiki/Standard_deduction'
-
-    page_html = read_page(page_url)
-    page_soup = soup(page_html, "html.parser")
-
-    
-
 #Parses as HTML
 def tax_bracket():
     #Tax dictionary to parse through
