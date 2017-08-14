@@ -27,7 +27,7 @@ def print_wage(tax_dict):
 
     #Go through tax dictionary and compare which one it falls under
     for k in tax_dict:
-        if wage < k:
+        if wage < int(k):
             return wage * tax_dict[k]
 
 
@@ -36,4 +36,4 @@ if __name__ == '__main__':
     tax = bracket() 
     deduc = deduction()
     sub_tax = tax[print_menu(tax)]
-    print(print_wage(sub_tax))
+   print(print_wage(sub_tax))
